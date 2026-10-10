@@ -1,1 +1,128 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Essonne — Présentations 2022</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>:root{--i:#14243c;--m:#65748a;--p:#f7f5f0;--b:#075b8e;--l:#d9dfe7;--a:#e89b2f}*{box-sizing:border-box}body{margin:0;background:var(--p);color:var(--i);font-family:DM Sans,sans-serif}.s{max-width:1320px;margin:auto;padding:38px 28px 70px}.e{font-size:12px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--b)}h1,h2{font-family:Newsreader,serif;letter-spacing:-.027em}h1{font-size:clamp(42px,6vw,69px);line-height:.96;margin:13px 0 18px;max-width:850px}h2{font-size:31px;margin:0 0 7px}.lede{font-size:18px;line-height:1.55;color:#43546b;max-width:800px;margin:0}.hero{padding:24px 0 36px;border-bottom:1px solid var(--l)}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-top:28px}.stat,.card,table{background:#fff;border:1px solid var(--l);box-shadow:0 10px 32px #12304a12}.stat{padding:18px}.stat b{font-size:34px;line-height:1;color:var(--b);display:block}.stat span,.small,.intro,footer{display:block;color:var(--m);font-size:12px;line-height:1.45;margin-top:9px}.sec{padding-top:36px}.intro{font-size:14px;margin:0 0 17px}.filters{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;background:#edf2f5;border:1px solid var(--l);padding:15px}.filter label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:#51627a;margin-bottom:6px}.filter select{width:100%;font:inherit;color:var(--i);padding:10px;background:#fff;border:1px solid #cad3dd;border-radius:6px}.grid{display:grid;grid-template-columns:1.55fr .72fr;gap:20px;margin-top:18px}.map{height:570px;border:1px solid var(--l);box-shadow:0 10px 32px #12304a12}.side{display:grid;gap:14px;align-content:start}.card{padding:19px}.card h3{font-size:12px;letter-spacing:.09em;text-transform:uppercase;margin:0 0 13px}.count{font:700 42px/1 Newsreader,serif;color:var(--b)}.legend{display:grid;gap:7px;max-height:280px;overflow:auto}.legend button{border:0;background:transparent;padding:4px 0;text-align:left;font:inherit;color:var(--i);font-size:13px;cursor:pointer}.dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px}.note{border-left:4px solid var(--a);padding:12px 14px;background:#fff9ed;color:#5e5039;font-size:13px;line-height:1.45}.table{overflow:auto}table{width:100%;border-collapse:collapse;font-size:13px;min-width:900px}th{background:#edf2f5;color:#40526a;font-size:10px;letter-spacing:.07em;text-transform:uppercase;text-align:left;white-space:nowrap;cursor:pointer;position:sticky;top:0}th,td{padding:11px 12px;border-bottom:1px solid #e5ebf0;vertical-align:top}.pill{border-radius:999px;padding:3px 7px;font-size:11px;background:#e6f3eb;color:#1f6d47}footer{border-top:1px solid var(--l);padding-top:19px;margin-top:40px}a{color:var(--b)}@media(max-width:900px){.s{padding:23px 16px 50px}.stats{grid-template-columns:repeat(2,1fr)}.filters,.grid{grid-template-columns:1fr}.map{height:480px}}@media(max-width:470px){.stats{grid-template-columns:1fr 1fr}.stat{padding:15px}}</style></head><body><main class="s"><header class="hero"><div class="e">Étude descriptive · Essonne · 2022 / référence RNE 2026</div><h1>Présentations 2022 et élus habilités</h1><p class="lede">Les 119 présentations officiellement publiées pour l’Essonne sont rapprochées d’un extrait du Répertoire national des élus. La carte concerne les maires ; la liste couvre aussi les conseillers départementaux et régionaux, députés, sénateurs et présidents d’EPCI.</p><p class="intro">Comparaison historique : 102 présentations publiées en 2017, 119 en 2022 (+16,7 %), dont 40 présentateurs présents dans les deux listes.</p><div class="stats" id="stats"></div></header><section class="sec"><h2>Carte et filtres</h2><p class="intro">La nuance concerne seulement la liste municipale 2026, jamais une étiquette personnelle.</p><div class="filters"><div class="filter"><label>Candidat présenté en 2022</label><select id="candidate"></select></div><div class="filter"><label>Mandat lors de la présentation</label><select id="role"></select></div><div class="filter"><label>Mandat de référence RNE 2026</label><select id="currentRole"></select></div><div class="filter"><label>Nuance de liste municipale</label><select id="nuance"></select></div></div><div class="grid"><div id="map" class="map"></div><aside class="side"><article class="card"><h3>Présentations affichées</h3><div class="count" id="shown">—</div><p class="small" id="shownText"></p></article><article class="card"><h3>Répartition par candidat</h3><div id="legend" class="legend"></div></article><article class="note">Une présentation au Conseil constitutionnel est un acte institutionnel. Elle ne permet pas, seule, d’établir une adhésion, un soutien électoral ou une étiquette politique personnelle.</article></aside></div></section><section class="sec"><h2>Liste filtrable</h2><p class="intro">Trie par colonne. « Présent en RNE » est un rapprochement de nom normalisé ; il ne préjuge pas d’une continuité de mandat.</p><div class="table"><table><thead><tr><th data-k="name">Élu 2022 ↕</th><th data-k="role">Mandat 2022 ↕</th><th data-k="territory">Territoire ↕</th><th data-k="candidate">Candidat présenté ↕</th><th data-k="currentRoles">Référence RNE 2026 ↕</th><th data-k="nuanceLabel">Nuance municipale ↕</th></tr></thead><tbody id="rows"></tbody></table></div></section><footer><strong>Sources et méthode.</strong> Présentations : <a href="https://www.data.gouv.fr/datasets/parrainages-des-candidats-a-lelection-presidentielle-francaise-de-2022" target="_blank">fichier final du Conseil constitutionnel</a>, publié le 7 mars 2022. Référence : <a href="https://www.data.gouv.fr/datasets/repertoire-national-des-elus-1" target="_blank">Répertoire national des élus</a>, extraction du 11 août 2026. Le taux de 41,6 % rapporte les 119 présentations à 286 mandats habilitants de référence en 2022 : 194 maires, 42 conseillers départementaux, 22 conseillers régionaux, 10 députés, 5 sénateurs et 13 présidents d’EPCI. C’est un taux par mandat, non par personne unique : les cumuls de mandat empêchent de le présenter comme un taux d’élus distincts sans référentiel nominatif exhaustif 2022. Le RNE est une photographie de référence, non une liste définitive pour une future élection. Fond communal : API géographique de l’État.</footer></main><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>const n=s=>(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,''),e=s=>String(s||'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])),q=id=>document.getElementById(id);let a=[],M,G,m=[],k='name',up=true;function o(id,x,t){q(id).innerHTML=`<option value="">${t}</option>`+x.map(v=>`<option>${e(v)}</option>`).join('')}function f(){return a.filter(x=>(!q('candidate').value||x.candidate===q('candidate').value)&&(!q('role').value||x.role===q('role').value)&&(!q('currentRole').value||x.currentRoles.includes(q('currentRole').value))&&(!q('nuance').value||x.nuance===q('nuance').value))}function p(){let r=f();q('shown').textContent=r.length;q('shownText').textContent=`sur ${a.length} présentations officielles de l’Essonne`;m.forEach(x=>M.removeLayer(x));m=[];let b={};r.filter(x=>x.town).forEach(x=>(b[x.candidate]??=[]).push(x));Object.values(b).flat().forEach(x=>{let z=G.get(n(x.town));if(!z)return;let c=L.geoJSON(z).getBounds().getCenter();m.push(L.circleMarker(c,{radius:7,weight:1.5,color:'#fff',fillColor:x.color,fillOpacity:1}).addTo(M).bindPopup(`<b>${e(x.town)}</b><br><b>${e(x.name)}</b><br>${e(x.role)}<br><b>Présentation :</b> ${e(x.candidate)}`))});q('legend').innerHTML=Object.entries(b).sort((x,y)=>y[1].length-x[1].length).map(([x,v])=>`<button onclick="q('candidate').value='${e(x)}';p()"><i class="dot" style="background:${v[0].color}"></i>${e(x)} (${v.length})</button>`).join('')||'<p class="small">Aucune commune cartographiable.</p>';r.sort((x,y)=>{let X=String(x[k]||''),Y=String(y[k]||'');return up?X.localeCompare(Y,'fr'):Y.localeCompare(X,'fr')});q('rows').innerHTML=r.map(x=>`<tr><td><b>${e(x.name)}</b></td><td>${e(x.role)}</td><td>${e(x.territory)}</td><td><i class="dot" style="background:${x.color}"></i>${e(x.candidate)}<br><small>${e(x.candidateLabel)}</small></td><td>${x.currentRoles.length?`<span class="pill">Oui</span> ${e(x.currentRoles.join(' · '))}`:'—'}</td><td>${x.town?e(x.nuanceLabel):'—'}</td></tr>`).join('')}async function init(){let d=await fetch('./data.json').then(x=>x.json()),may=new Map(d.municipalities.map(x=>[n(x.currentMayor),x])),cur=new Map;d.currentEligible.forEach(x=>cur.set(n(x.name),[...(cur.get(n(x.name))||[]),x.role]));a=d.presentations.map(x=>{let z=may.get(n(x.name));return {...x,currentRoles:[...new Set(cur.get(n(x.name))||[])],nuance:z?.nuance||'NON_PUBLIEE',nuanceLabel:z?.nuanceLabel||'—'}});o('candidate',[...new Set(a.map(x=>x.candidate))].sort(),'Tous les candidats');o('role',[...new Set(a.map(x=>x.role))].sort(),'Tous les mandats 2022');o('currentRole',[...new Set(d.currentEligible.map(x=>x.role))].sort(),'Tous les mandats RNE');o('nuance',[...new Set(a.filter(x=>x.nuance!=='NON_PUBLIEE').map(x=>x.nuance))].sort(),'Toutes les nuances');let ma=a.filter(x=>x.role==='Maire').length,ok=a.filter(x=>x.currentRoles.length).length;q('stats').innerHTML=`<div class="stat"><b>${a.length}</b><span>présentations publiées en Essonne</span></div><div class="stat"><b>${ma}</b><span>présentations par des maires</span></div><div class="stat"><b>${a.length-ma}</b><span>par d’autres mandats</span></div><div class="stat"><b>41,6 %</b><span>des 286 mandats habilitants de référence en 2022</span></div>`;M=L.map('map',{scrollWheelZoom:false,zoomControl:false});let g=await fetch('https://geo.api.gouv.fr/departements/91/communes?format=geojson&geometry=contour').then(x=>x.json());G=new Map(g.features.map(x=>[n(x.properties.nom),x]));let layer=L.geoJSON(g,{style:{color:'#a7b4c1',weight:.6,fillColor:'#f7f5f0',fillOpacity:1}}).addTo(M);M.fitBounds(layer.getBounds().pad(.02));['candidate','role','currentRole','nuance'].forEach(id=>q(id).addEventListener('change',p));document.querySelectorAll('th').forEach(t=>t.onclick=()=>{up=t.dataset.k===k?!up:true;k=t.dataset.k;p()});p()}init().catch(()=>q('rows').innerHTML='<tr><td colspan="6">Impossible de charger les données.</td></tr>');</script></body></html>
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Essonne — Présentations présidentielles</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    :root{--ink:#14243c;--muted:#627088;--paper:#f7f5f0;--blue:#075b8e;--line:#d9dfe7;--amber:#e89b2f;--soft:#edf2f5}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:"DM Sans",sans-serif}.shell{max-width:1320px;margin:auto;padding:38px 28px 72px}
+    .eyebrow{font-size:12px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--blue)}h1,h2{font-family:Newsreader,serif;letter-spacing:-.027em}h1{font-size:clamp(42px,6vw,69px);line-height:.96;margin:13px 0 18px;max-width:880px}h2{font-size:31px;margin:0 0 8px}
+    .lede{font-size:18px;line-height:1.55;color:#43546b;max-width:890px;margin:0}.hero{padding:24px 0 34px;border-bottom:1px solid var(--line)}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}.tab{font:600 14px/1 "DM Sans";padding:10px 14px;border-radius:999px;border:1px solid #afbcc9;background:#fff;color:var(--ink);cursor:pointer}.tab[aria-selected="true"]{background:var(--blue);color:#fff;border-color:var(--blue)}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-top:21px}.stat,.card,table{background:#fff;border:1px solid var(--line);box-shadow:0 10px 32px #12304a12}.stat{padding:18px}.stat b{font-size:34px;line-height:1;color:var(--blue);display:block}.stat span,.small,.intro,footer{display:block;color:var(--muted);font-size:12px;line-height:1.45;margin-top:9px}
+    .section{padding-top:36px}.intro{font-size:14px;margin:0 0 17px}.compare{display:grid;grid-template-columns:1.35fr .65fr;gap:20px;align-items:stretch}.comparison{padding:20px}.comparison dl{display:grid;grid-template-columns:1fr auto auto;gap:0;margin:10px 0 0}.comparison dt,.comparison dd{padding:8px 0;border-bottom:1px solid #e5ebf0;font-size:13px}.comparison dd{text-align:right;margin:0}.comparison .head{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+    .note{border-left:4px solid var(--amber);padding:13px 15px;background:#fff9ed;color:#5e5039;font-size:13px;line-height:1.48}.filters{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;background:var(--soft);border:1px solid var(--line);padding:15px}.filter label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:#51627a;margin-bottom:6px}.filter select{width:100%;font:inherit;color:var(--ink);padding:10px;background:#fff;border:1px solid #cad3dd;border-radius:6px}
+    .grid{display:grid;grid-template-columns:1.55fr .72fr;gap:20px;margin-top:18px}.map{height:560px;border:1px solid var(--line);box-shadow:0 10px 32px #12304a12}.side{display:grid;gap:14px;align-content:start}.card{padding:19px}.card h3{font-size:12px;letter-spacing:.09em;text-transform:uppercase;margin:0 0 13px}.count{font:700 42px/1 Newsreader,serif;color:var(--blue)}.legend{display:grid;gap:7px;max-height:280px;overflow:auto}.legend button{border:0;background:transparent;padding:4px 0;text-align:left;font:inherit;color:var(--ink);font-size:13px;cursor:pointer}.dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px}
+    .table{overflow:auto}table{width:100%;border-collapse:collapse;font-size:13px;min-width:860px}th{background:var(--soft);color:#40526a;font-size:10px;letter-spacing:.07em;text-transform:uppercase;text-align:left;white-space:nowrap;cursor:pointer;position:sticky;top:0}th,td{padding:11px 12px;border-bottom:1px solid #e5ebf0;vertical-align:top}.pill{border-radius:999px;padding:3px 7px;font-size:11px;background:#e6f3eb;color:#1f6d47}footer{border-top:1px solid var(--line);padding-top:19px;margin-top:40px}a{color:var(--blue)}
+    @media(max-width:900px){.shell{padding:23px 16px 50px}.stats{grid-template-columns:repeat(2,1fr)}.filters,.grid,.compare{grid-template-columns:1fr}.map{height:480px}}@media(max-width:470px){.stats{grid-template-columns:1fr 1fr}.stat{padding:15px}}
+  </style>
+</head>
+<body>
+<main class="shell">
+  <header class="hero">
+    <div class="eyebrow">Étude descriptive · Essonne · 2017 / 2022 · référence RNE 2026</div>
+    <h1>Présentations présidentielles et mandats habilitants</h1>
+    <p class="lede">Cette étude regroupe les présentations publiées en Essonne lors des deux derniers scrutins présidentiels et les rapproche, avec prudence, d’un extrait du Répertoire national des élus.</p>
+    <div class="tabs" role="tablist" aria-label="Année de présentation">
+      <button class="tab" id="tab2022" role="tab" aria-selected="true">Présentations 2022</button>
+      <button class="tab" id="tab2017" role="tab" aria-selected="false">Présentations 2017</button>
+    </div>
+    <div class="stats" id="stats"></div>
+  </header>
+
+  <section class="section">
+    <h2>Évolution 2017–2022</h2>
+    <p class="intro">Une comparaison de publications officielles : elle décrit des actes institutionnels, pas des soutiens ou appartenances politiques.</p>
+    <div class="compare">
+      <article class="card comparison">
+        <h3>Présentations par mandat déclaré</h3>
+        <dl>
+          <dt class="head">Mandat</dt><dd class="head">2017</dd><dd class="head">2022</dd>
+          <dt>Maires</dt><dd>62</dd><dd>74</dd>
+          <dt>Conseillers départementaux</dt><dd>19</dd><dd>18</dd>
+          <dt>Conseillers régionaux</dt><dd>12</dd><dd>12</dd>
+          <dt>Députés</dt><dd>6</dd><dd>9</dd>
+          <dt>Sénateurs</dt><dd>3</dd><dd>5</dd>
+          <dt>Présidents d’EPCI</dt><dd>0</dd><dd>1</dd>
+        </dl>
+      </article>
+      <aside class="note"><strong>Lecture prudente.</strong> 102 présentations ont été publiées en 2017 et 119 en 2022, soit +16,7 %. Quarante présentateurs figurent dans les deux listes. Les titulaires, les périmètres et les listes de candidats ont changé entre les deux scrutins.</aside>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Carte et filtres</h2>
+    <p class="intro">La carte représente les communes lorsque le mandat déclaré est municipal. La couleur distingue uniquement le candidat présenté pour le scrutin choisi.</p>
+    <div class="filters">
+      <div class="filter"><label>Candidat présenté</label><select id="candidate"></select></div>
+      <div class="filter"><label>Mandat déclaré</label><select id="role"></select></div>
+      <div class="filter"><label>Présence dans le RNE 2026</label><select id="rne"></select></div>
+    </div>
+    <div class="grid">
+      <div id="map" class="map"></div>
+      <aside class="side">
+        <article class="card"><h3>Présentations affichées</h3><div class="count" id="shown">—</div><p class="small" id="shownText"></p></article>
+        <article class="card"><h3>Répartition par candidat</h3><div id="legend" class="legend"></div></article>
+        <article class="note">Une présentation au Conseil constitutionnel est un acte institutionnel. Elle ne permet pas, seule, d’établir une adhésion, un soutien électoral ou une étiquette politique personnelle.</article>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Liste filtrable</h2>
+    <p class="intro">Trie par colonne. « Retrouvé dans le RNE » repose sur un rapprochement de nom normalisé : il n’établit pas à lui seul la continuité d’un mandat.</p>
+    <div class="table"><table><thead><tr>
+      <th data-key="name">Élu déclaré ↕</th><th data-key="role">Mandat ↕</th><th data-key="territory">Territoire ↕</th><th data-key="candidate">Candidat présenté ↕</th><th data-key="currentRoles">Référence RNE 2026 ↕</th>
+    </tr></thead><tbody id="rows"></tbody></table></div>
+  </section>
+
+  <footer><strong>Sources et méthode.</strong> Présentations : <a href="https://www.data.gouv.fr/datasets/parrainages-des-candidats-a-lelection-presidentielle-francaise-de-2017" target="_blank" rel="noopener">Conseil constitutionnel — 2017</a> et <a href="https://www.data.gouv.fr/datasets/parrainages-des-candidats-a-lelection-presidentielle-francaise-de-2022" target="_blank" rel="noopener">Conseil constitutionnel — 2022</a>. Référence : <a href="https://www.data.gouv.fr/datasets/repertoire-national-des-elus-1" target="_blank" rel="noopener">Répertoire national des élus</a>, extrait du 11 août 2026. Le RNE est une photographie de référence, non une liste définitive de personnes habilitées pour une future élection.</footer>
+</main>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const normalise=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
+const esc=s=>String(s||'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+const color=s=>{let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))>>>0;return `hsl(${h%360} 48% 43%)`};
+let data,activeYear='2022',rows=[],map,geo,markers=[],sortKey='name',ascending=true;
+
+function options(id,values,empty){$(id).innerHTML=`<option value="">${empty}</option>`+values.map(v=>`<option>${esc(v)}</option>`).join('')}
+function current(){return activeYear==='2022'?data.presentations:data.presentations2017}
+function filtered(){return rows.filter(x=>(!$('candidate').value||x.candidate===$('candidate').value)&&(!$('role').value||x.role===$('role').value)&&(!$('rne').value||($('rne').value==='oui'?x.currentRoles.length:!x.currentRoles.length)))}
+function role2022(r){return r==='Maire'||r==='Conseiller départemental'||r==='Conseiller régional'||r==='Député'||r==='Sénateur'||r==="Président d’EPCI"}
+function setup(){
+  const source=current(), currentByName=new Map;
+  data.currentEligible.forEach(x=>currentByName.set(normalise(x.name),[...(currentByName.get(normalise(x.name))||[]),x.role]));
+  rows=source.map(x=>({...x,currentRoles:[...new Set(currentByName.get(normalise(x.name))||[])],color:x.color||color(x.candidate),town:x.town||(x.role==='Maire'?x.territory:'')}));
+  options('candidate',[...new Set(rows.map(x=>x.candidate))].sort((a,b)=>a.localeCompare(b,'fr')),'Tous les candidats');
+  options('role',[...new Set(rows.map(x=>x.role))].sort((a,b)=>a.localeCompare(b,'fr')),'Tous les mandats');
+  $('rne').innerHTML='<option value="">Toutes les situations RNE</option><option value="oui">Retrouvé dans le RNE</option><option value="non">Non retrouvé dans l’extrait</option>';
+  const mayors=rows.filter(x=>x.role==='Maire').length, found=rows.filter(x=>x.currentRoles.length).length;
+  $('stats').innerHTML=`<div class="stat"><b>${rows.length}</b><span>présentations publiées en Essonne</span></div><div class="stat"><b>${mayors}</b><span>présentations par des maires</span></div><div class="stat"><b>${rows.length-mayors}</b><span>par d’autres mandats</span></div><div class="stat"><b>${found}</b><span>noms retrouvés dans l’extrait RNE 2026</span></div>`;
+  render();
+}
+function render(){
+  const selection=filtered(), grouped={};markers.forEach(x=>map.removeLayer(x));markers=[];
+  selection.filter(x=>x.town).forEach(x=>{(grouped[x.candidate]??=[]).push(x);const feature=geo.get(normalise(x.town));if(!feature)return;const centre=L.geoJSON(feature).getBounds().getCenter();markers.push(L.circleMarker(centre,{radius:7,weight:1.5,color:'#fff',fillColor:x.color,fillOpacity:1}).addTo(map).bindPopup(`<b>${esc(x.town)}</b><br><b>${esc(x.name)}</b><br>${esc(x.role)}<br><b>Présentation :</b> ${esc(x.candidate)}`))});
+  $('shown').textContent=selection.length;$('shownText').textContent=`sur ${rows.length} présentations publiées en ${activeYear}`;
+  $('legend').innerHTML=Object.entries(grouped).sort((a,b)=>b[1].length-a[1].length).map(([candidate,list])=>`<button data-candidate="${esc(candidate)}"><i class="dot" style="background:${list[0].color}"></i>${esc(candidate)} (${list.length})</button>`).join('')||'<p class="small">Aucune commune cartographiable avec ces filtres.</p>';
+  $('legend').querySelectorAll('button').forEach(b=>b.onclick=()=>{$('candidate').value=b.dataset.candidate;render()});
+  selection.sort((a,b)=>{const x=String(a[sortKey]||''),y=String(b[sortKey]||'');return ascending?x.localeCompare(y,'fr'):y.localeCompare(x,'fr')});
+  $('rows').innerHTML=selection.map(x=>`<tr><td><b>${esc(x.name)}</b></td><td>${esc(x.role)}</td><td>${esc(x.territory)}</td><td><i class="dot" style="background:${x.color}"></i>${esc(x.candidate)}</td><td>${x.currentRoles.length?`<span class="pill">Retrouvé</span> ${esc(x.currentRoles.join(' · '))}`:'—'}</td></tr>`).join('');
+}
+async function init(){
+  const [d,d17,boundaries]=await Promise.all([fetch('./data.json').then(r=>r.json()),fetch('./data-2017.json').then(r=>r.json()),fetch('https://geo.api.gouv.fr/departements/91/communes?format=geojson&geometry=contour').then(r=>r.json())]);
+  data={...d,...d17};map=L.map('map',{scrollWheelZoom:false,zoomControl:false});geo=new Map(boundaries.features.map(x=>[normalise(x.properties.nom),x]));const layer=L.geoJSON(boundaries,{style:{color:'#a7b4c1',weight:.6,fillColor:'#f7f5f0',fillOpacity:1}}).addTo(map);map.fitBounds(layer.getBounds().pad(.02));
+  ['candidate','role','rne'].forEach(id=>$(id).addEventListener('change',render));
+  document.querySelectorAll('th').forEach(th=>th.onclick=()=>{ascending=th.dataset.key===sortKey?!ascending:true;sortKey=th.dataset.key;render()});
+  ['2022','2017'].forEach(year=>$('tab'+year).onclick=()=>{activeYear=year;$('tab2022').setAttribute('aria-selected',year==='2022');$('tab2017').setAttribute('aria-selected',year==='2017');setup()});
+  setup();
+}
+init().catch(()=>{$('rows').innerHTML='<tr><td colspan="5">Impossible de charger les données.</td></tr>'});
+</script>
+</body>
+</html>

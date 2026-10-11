@@ -30,6 +30,7 @@
     <div class="tabs" role="tablist" aria-label="Année de présentation">
       <button class="tab" id="tab2022" role="tab" aria-selected="true">Présentations 2022</button>
       <button class="tab" id="tab2017" role="tab" aria-selected="false">Présentations 2017</button>
+      <button class="tab" id="tabEligible" role="tab" aria-selected="false">Mandats RNE 2026</button>
     </div>
     <div class="stats" id="stats"></div>
   </header>
@@ -60,6 +61,7 @@
     <div class="filters">
       <div class="filter"><label>Candidat présenté</label><select id="candidate"></select></div>
       <div class="filter"><label>Mandat déclaré</label><select id="role"></select></div>
+      <div class="filter"><label>Territoire</label><select id="territory"></select></div>
       <div class="filter"><label>Présence dans le RNE 2026</label><select id="rne"></select></div>
     </div>
     <div class="grid">
@@ -76,7 +78,7 @@
     <h2>Liste filtrable</h2>
     <p class="intro">Trie par colonne. « Retrouvé dans le RNE » repose sur un rapprochement de nom normalisé : il n’établit pas à lui seul la continuité d’un mandat.</p>
     <div class="table"><table><thead><tr>
-      <th data-key="name">Élu déclaré ↕</th><th data-key="role">Mandat ↕</th><th data-key="territory">Territoire ↕</th><th data-key="candidate">Candidat présenté ↕</th><th data-key="currentRoles">Référence RNE 2026 ↕</th>
+      <th data-key="name">Élu déclaré ↕</th><th data-key="role">Mandat ↕</th><th data-key="territory">Territoire ↕</th><th data-key="candidate">Présentation 2022 ↕</th><th data-key="currentRoles">Référence RNE 2026 ↕</th>
     </tr></thead><tbody id="rows"></tbody></table></div>
   </section>
 
@@ -91,24 +93,26 @@ const color=s=>{let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))>>>0;re
 let data,activeYear='2022',rows=[],map,geo,markers=[],sortKey='name',ascending=true;
 
 function options(id,values,empty){$(id).innerHTML=`<option value="">${empty}</option>`+values.map(v=>`<option>${esc(v)}</option>`).join('')}
-function current(){return activeYear==='2022'?data.presentations:data.presentations2017}
-function filtered(){return rows.filter(x=>(!$('candidate').value||x.candidate===$('candidate').value)&&(!$('role').value||x.role===$('role').value)&&(!$('rne').value||($('rne').value==='oui'?x.currentRoles.length:!x.currentRoles.length)))}
+function current(){return activeYear==='2022'?data.presentations:activeYear==='2017'?data.presentations2017:data.currentEligible}
+function filtered(){return rows.filter(x=>(!$('candidate').value||x.candidate===$('candidate').value)&&(!$('role').value||x.role===$('role').value)&&(!$('territory').value||x.territory===$('territory').value)&&(!$('rne').value||(activeYear==='eligible'?($('rne').value==='oui'?x.candidate!=='—':x.candidate==='—'):($('rne').value==='oui'?x.currentRoles.length:!x.currentRoles.length))))}
 function role2022(r){return r==='Maire'||r==='Conseiller départemental'||r==='Conseiller régional'||r==='Député'||r==='Sénateur'||r==="Président d’EPCI"}
 function setup(){
-  const source=current(), currentByName=new Map;
+  const source=current(), currentByName=new Map, presentationsByName=new Map;
   data.currentEligible.forEach(x=>currentByName.set(normalise(x.name),[...(currentByName.get(normalise(x.name))||[]),x.role]));
-  rows=source.map(x=>({...x,currentRoles:[...new Set(currentByName.get(normalise(x.name))||[])],color:x.color||color(x.candidate),town:x.town||(x.role==='Maire'?x.territory:'')}));
-  options('candidate',[...new Set(rows.map(x=>x.candidate))].sort((a,b)=>a.localeCompare(b,'fr')),'Tous les candidats');
+  data.presentations.forEach(x=>presentationsByName.set(normalise(x.name),[...(presentationsByName.get(normalise(x.name))||[]),x]));
+  rows=source.map(x=>activeYear==='eligible'?({...x,candidate:(presentationsByName.get(normalise(x.name))||[]).map(p=>p.candidate).join(' · ')||'—',currentRoles:[x.role],color:'#075b8e',town:x.town||(x.role==='Maire'?x.territory:'')}):({...x,currentRoles:[...new Set(currentByName.get(normalise(x.name))||[])],color:x.color||color(x.candidate),town:x.town||(x.role==='Maire'?x.territory:'')}));
+  options('candidate',[...new Set(rows.map(x=>x.candidate))].filter(x=>x!=='—').sort((a,b)=>a.localeCompare(b,'fr')),activeYear==='eligible'?'Toutes les présentations 2022':'Tous les candidats');
   options('role',[...new Set(rows.map(x=>x.role))].sort((a,b)=>a.localeCompare(b,'fr')),'Tous les mandats');
-  $('rne').innerHTML='<option value="">Toutes les situations RNE</option><option value="oui">Retrouvé dans le RNE</option><option value="non">Non retrouvé dans l’extrait</option>';
-  const mayors=rows.filter(x=>x.role==='Maire').length, found=rows.filter(x=>x.currentRoles.length).length;
-  $('stats').innerHTML=`<div class="stat"><b>${rows.length}</b><span>présentations publiées en Essonne</span></div><div class="stat"><b>${mayors}</b><span>présentations par des maires</span></div><div class="stat"><b>${rows.length-mayors}</b><span>par d’autres mandats</span></div><div class="stat"><b>${found}</b><span>noms retrouvés dans l’extrait RNE 2026</span></div>`;
+  options('territory',[...new Set(rows.map(x=>x.territory))].sort((a,b)=>a.localeCompare(b,'fr')),'Tous les territoires');
+  $('rne').innerHTML=activeYear==='eligible'?'<option value="">Tous les mandats RNE</option><option value="oui">A présenté en 2022</option><option value="non">Sans présentation 2022 retrouvée</option>':'<option value="">Toutes les situations RNE</option><option value="oui">Retrouvé dans le RNE</option><option value="non">Non retrouvé dans l’extrait</option>';
+  const mayors=rows.filter(x=>x.role==='Maire').length, found=activeYear==='eligible'?rows.filter(x=>x.candidate!=='—').length:rows.filter(x=>x.currentRoles.length).length, people=new Set(rows.map(x=>x.name)).size;
+  $('stats').innerHTML=activeYear==='eligible'?`<div class="stat"><b>${rows.length}</b><span>mandats RNE recensés</span></div><div class="stat"><b>${people}</b><span>personnes uniques</span></div><div class="stat"><b>${mayors}</b><span>mandats de maire</span></div><div class="stat"><b>${found}</b><span>personnes avec présentation 2022 retrouvée</span></div>`:`<div class="stat"><b>${rows.length}</b><span>présentations publiées en Essonne</span></div><div class="stat"><b>${mayors}</b><span>présentations par des maires</span></div><div class="stat"><b>${rows.length-mayors}</b><span>par d’autres mandats</span></div><div class="stat"><b>${found}</b><span>noms retrouvés dans l’extrait RNE 2026</span></div>`;
   render();
 }
 function render(){
   const selection=filtered(), grouped={};markers.forEach(x=>map.removeLayer(x));markers=[];
   selection.filter(x=>x.town).forEach(x=>{(grouped[x.candidate]??=[]).push(x);const feature=geo.get(normalise(x.town));if(!feature)return;const centre=L.geoJSON(feature).getBounds().getCenter();markers.push(L.circleMarker(centre,{radius:7,weight:1.5,color:'#fff',fillColor:x.color,fillOpacity:1}).addTo(map).bindPopup(`<b>${esc(x.town)}</b><br><b>${esc(x.name)}</b><br>${esc(x.role)}<br><b>Présentation :</b> ${esc(x.candidate)}`))});
-  $('shown').textContent=selection.length;$('shownText').textContent=`sur ${rows.length} présentations publiées en ${activeYear}`;
+  $('shown').textContent=selection.length;$('shownText').textContent=activeYear==='eligible'?`sur ${rows.length} mandats RNE 2026`:`sur ${rows.length} présentations publiées en ${activeYear}`;
   $('legend').innerHTML=Object.entries(grouped).sort((a,b)=>b[1].length-a[1].length).map(([candidate,list])=>`<button data-candidate="${esc(candidate)}"><i class="dot" style="background:${list[0].color}"></i>${esc(candidate)} (${list.length})</button>`).join('')||'<p class="small">Aucune commune cartographiable avec ces filtres.</p>';
   $('legend').querySelectorAll('button').forEach(b=>b.onclick=()=>{$('candidate').value=b.dataset.candidate;render()});
   selection.sort((a,b)=>{const x=String(a[sortKey]||''),y=String(b[sortKey]||'');return ascending?x.localeCompare(y,'fr'):y.localeCompare(x,'fr')});
@@ -117,9 +121,9 @@ function render(){
 async function init(){
   const [d,d17,boundaries]=await Promise.all([fetch('./data.json').then(r=>r.json()),fetch('./data-2017.json').then(r=>r.json()),fetch('https://geo.api.gouv.fr/departements/91/communes?format=geojson&geometry=contour').then(r=>r.json())]);
   data={...d,...d17};map=L.map('map',{scrollWheelZoom:false,zoomControl:false});geo=new Map(boundaries.features.map(x=>[normalise(x.properties.nom),x]));const layer=L.geoJSON(boundaries,{style:{color:'#a7b4c1',weight:.6,fillColor:'#f7f5f0',fillOpacity:1}}).addTo(map);map.fitBounds(layer.getBounds().pad(.02));
-  ['candidate','role','rne'].forEach(id=>$(id).addEventListener('change',render));
+  ['candidate','role','territory','rne'].forEach(id=>$(id).addEventListener('change',render));
   document.querySelectorAll('th').forEach(th=>th.onclick=()=>{ascending=th.dataset.key===sortKey?!ascending:true;sortKey=th.dataset.key;render()});
-  ['2022','2017'].forEach(year=>$('tab'+year).onclick=()=>{activeYear=year;$('tab2022').setAttribute('aria-selected',year==='2022');$('tab2017').setAttribute('aria-selected',year==='2017');setup()});
+  [['2022','tab2022'],['2017','tab2017'],['eligible','tabEligible']].forEach(([year,id])=>$(id).onclick=()=>{activeYear=year;$('tab2022').setAttribute('aria-selected',year==='2022');$('tab2017').setAttribute('aria-selected',year==='2017');$('tabEligible').setAttribute('aria-selected',year==='eligible');setup()});
   setup();
 }
 init().catch(()=>{$('rows').innerHTML='<tr><td colspan="5">Impossible de charger les données.</td></tr>'});
